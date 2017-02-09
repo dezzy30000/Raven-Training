@@ -1,4 +1,0 @@
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\bin\Release\RavenTraining.Types.dll
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\bin\Release\RavenTraining.Types.pdb
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\obj\Release\RavenTraining.Types.dll
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\obj\Release\RavenTraining.Types.pdb

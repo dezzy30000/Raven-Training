@@ -1,5 +1,0 @@
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\bin\Debug\RavenTraining.Types.dll
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\bin\Debug\RavenTraining.Types.pdb
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\obj\Debug\RavenTraining.Types.csprojResolveAssemblyReference.cache
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\obj\Debug\RavenTraining.Types.dll
-c:\users\mohammadshahab\documents\visual studio 2015\Projects\RavenTraining\RavenTraining.Types\obj\Debug\RavenTraining.Types.pdb
