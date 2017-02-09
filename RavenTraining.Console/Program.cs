@@ -83,7 +83,7 @@ namespace RavenTraining.Console
                             {
                                 Id = page.Id,
                                 Slug = page.Slug,
-                                Path = PathBuilder.Build(PathCalculator.GetPathForNodeWithId(LoadDocument<PagesHierarchyTree>(PagesHierarchyTreeNodeId), page).Select(id => LoadDocument<Page>(id).Slug))
+                                Path = PathBuilder.Build(PathCalculator.GetPathForNodeWithId(LoadDocument<PagesHierarchyTree>(PagesHierarchyTreeNodeId), page).Select(id => LoadDocument<Page>((string)id).Slug))
                             });
 
             StoreAllFields(FieldStorage.Yes);

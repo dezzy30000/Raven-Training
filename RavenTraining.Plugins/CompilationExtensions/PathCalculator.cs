@@ -1,12 +1,11 @@
-﻿using RavenTraining.Types;
+﻿using Raven.Abstractions.Linq;
 using System.Collections.Generic;
-using static RavenTraining.Types.PagesHierarchyTree;
 
 namespace RavenTraining.Plugins.CompilationExtensions
 {
     public static class PathCalculator
     {
-        public static string[] GetPathForNodeWithId(PagesHierarchyTree pagesHierarchyTree, Page page)
+        public static DynamicList GetPathForNodeWithId(dynamic pagesHierarchyTree, dynamic page)
         {
             var paths = new List<string>();
 
@@ -16,10 +15,10 @@ namespace RavenTraining.Plugins.CompilationExtensions
                 paths.Reverse();
             }
 
-            return paths.ToArray();
+            return new DynamicList(paths.ToArray());
         }
 
-        private static bool LocateNode(List<string> paths, Node currentNode, string id)
+        private static bool LocateNode(dynamic paths, dynamic currentNode, string id)
         {
             if (currentNode.Id == id)
             {
