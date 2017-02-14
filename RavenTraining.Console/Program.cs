@@ -1,10 +1,13 @@
 ﻿using Raven.Abstractions.Indexing;
+using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
 using RavenTraining.Console.ViewModels;
 using RavenTraining.Plugins.CompilationExtensions;
 using RavenTraining.Types;
+using System.Collections.Generic;
 using System.Linq;
+using static RavenTraining.Types.PagesHierarchyTree;
 
 namespace RavenTraining.Console
 {
@@ -15,7 +18,17 @@ namespace RavenTraining.Console
             using (var store = new DocumentStore { Url = "http://localhost:8080/", DefaultDatabase = "dukaan" })
             {
                 store.Initialize();
-                new PageViewModels_Query().Execute(store);
+
+                using (var session = store.OpenSession())
+                {
+                    var result = session
+                        .Query<Page>()
+                        .Where(page => page.Slug == "dresses")
+                        .ProjectFromIndexFieldsInto<Page>()
+                        .Single();
+                }
+
+                //new PageViewModels_Query().Execute(store);
 
                 //using (var session = store.OpenSession())
                 //{
