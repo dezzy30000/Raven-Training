@@ -1,5 +1,5 @@
 ﻿using Raven.Database.Plugins;
-using RavenTraining.Types;
+using RavenTraining.Types.Pages.Abstract;
 
 namespace RavenTraining.Plugins.CompilationExtensions
 {

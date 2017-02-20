@@ -1,10 +1,14 @@
-﻿using Raven.Abstractions.Indexing;
+﻿using Raven.Client;
 using Raven.Client.Document;
-using Raven.Client.Indexes;
-using RavenTraining.Console.ViewModels;
-using RavenTraining.Plugins.CompilationExtensions;
+using Raven.Client.Linq;
+using Raven.Json.Linq;
+using RavenTraining.Console.Indexes;
 using RavenTraining.Types;
+using RavenTraining.Types.Pages;
+using RavenTraining.Types.Pages.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
+using static RavenTraining.Types.PagesHierarchyTree;
 
 namespace RavenTraining.Console
 {
@@ -15,78 +19,95 @@ namespace RavenTraining.Console
             using (var store = new DocumentStore { Url = "http://localhost:8080/", DefaultDatabase = "dukaan" })
             {
                 store.Initialize();
-                new PageViewModels_Query().Execute(store);
 
-                //using (var session = store.OpenSession())
-                //{
-                //    var home = new Page { Slug = "/" };
-                //    var men = new Page { Slug = "men" };
-                //    var women = new Page { Slug = "women" };
-                //    var dresses = new Page { Slug = "dresses" };
-                //    var coats = new Page { Slug = "coats" };
-                //    var trousers = new Page { Slug = "trousers" };
-                //    var blazers = new Page { Slug = "blazers" };
+                //CreateIndexes(store);
 
-                //    session.Store(home);
-                //    session.Store(men);
-                //    session.Store(women);
-                //    session.Store(dresses);
-                //    session.Store(coats);
-                //    session.Store(trousers);
-                //    session.Store(blazers);
+                using (var session = store.OpenSession())
+                {
+                    //Populate(session);
 
-                //    session.SaveChanges();
+                    var result = session
+                        .Query<IPage, Pages_BySlug_ForAll>()
+                        .Where(page => page.Slug == "parkas")
+                        .ProjectFromIndexFieldsInto<IPage>()
+                        .OfType<RavenJObject>()
+                        .Single();
 
-                //    session.Store(new PagesHierarchyTree
-                //    {
-                //        Root = new Node
-                //        {
-                //            Id = home.Id,
-                //            Children = new List<Node>
-                //            {
-                //                new Node
-                //                {
-                //                    Id = men.Id,
-                //                    Children = new List<Node>
-                //                    {
-                //                        new Node { Id = trousers.Id },
-                //                        new Node { Id = blazers.Id }
-                //                    }
-                //                },
-                //                new Node
-                //                {
-                //                    Id = women.Id,
-                //                    Children = new List<Node>
-                //                    {
-                //                        new Node { Id = dresses.Id },
-                //                        new Node { Id = coats.Id }
-                //                    }
-                //                }
-                //            }
-                //        }
-                //    });
-
-                //    session.SaveChanges();
-                //}
+                    var obj = result.ToObject<DetailsPage>();
+                }
             }
         }
-    }
 
-    public class PageViewModels_Query : AbstractIndexCreationTask<Page>
-    {
-        private const string PagesHierarchyTreeNodeId = "PagesHierarchyTrees/1";
+        #region Setup methods
 
-        public PageViewModels_Query()
+        private static void CreateIndexes(DocumentStore store)
         {
-            Map = pages => (from page in pages
-                            select new PageViewModel
-                            {
-                                Id = page.Id,
-                                Slug = page.Slug,
-                                Path = PathBuilder.Build(PathCalculator.GetPathForNodeWithId(LoadDocument<PagesHierarchyTree>(PagesHierarchyTreeNodeId), page).Select(id => LoadDocument<Page>((string)id).Slug))
-                            });
-
-            StoreAllFields(FieldStorage.Yes);
+            new Pages_BySlug_ForAll().Execute(store);
         }
+
+        private static void Populate(IDocumentSession session)
+        {
+            var home = new HomePage { Slug = "/" };
+            var men = new LandingPage { Slug = "men" };
+            var women = new LandingPage { Slug = "women" };
+            var dresses = new LandingPage { Slug = "dresses" };
+            var coats = new LandingPage { Slug = "coats" };
+            var trousers = new LandingPage { Slug = "trousers" };
+            var blazers = new LandingPage { Slug = "blazers" };
+
+            var coatPage = new DetailsPage { Slug = "parkas" };
+
+            session.Store(home);
+            session.Store(men);
+            session.Store(women);
+            session.Store(dresses);
+            session.Store(coats);
+            session.Store(trousers);
+            session.Store(blazers);
+            session.Store(coats);
+            session.Store(coatPage);
+
+            session.SaveChanges();
+
+            session.Store(new PagesHierarchyTree
+            {
+                Root = new Node
+                {
+                    Id = home.Id,
+                    Children = new List<Node>
+                            {
+                                new Node
+                                {
+                                    Id = men.Id,
+                                    Children = new List<Node>
+                                    {
+                                        new Node { Id = trousers.Id },
+                                        new Node { Id = blazers.Id }
+                                    }
+                                },
+                                new Node
+                                {
+                                    Id = women.Id,
+                                    Children = new List<Node>
+                                    {
+                                        new Node { Id = dresses.Id },
+                                        new Node
+                                        {
+                                            Id = coats.Id,
+                                            Children = new List<Node>
+                                            {
+                                                new Node { Id = coatPage.Id }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                }
+            });
+
+            session.SaveChanges();
+        }
+
+        #endregion
     }
 }
